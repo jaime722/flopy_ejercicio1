@@ -5,20 +5,36 @@ Spyder Editor
 This is a temporary script file.
 """
 
+import os
 import numpy as np
+import matplotlib.pyplot as plt
 import flopy
 
-modelname = "model1"
-mf = flopy.modflow.Modflow(modelname, exe_name="mf2005")
+name = "ejercicio1"
+h1 = 100
+h2 = 90
+Nlay = 10
+N = 101
+L = 400.0
+H = 50.0
+k = 1.0
 
-Lx = 1000.0
-Ly = 1000.0
-ztop = 0.0
-zbot = -50.0
-nlay = 1
-nrow = 10
-ncol = 10
-delr = Lx / ncol
-delc = Ly / nrow
-delv = (ztop - zbot) / nlay
-botm = np.linspace(ztop, zbot, nlay + 1)
+sim = flopy.mf6.MFSimulation(
+    sim_name=name, exe_name="C:/Users/Lenovo/Desktop/Diapositivas PyS/DIPLOMADO/mf6.2.0/bin", version="mf6", sim_ws="workspace"
+) 
+
+#guarda mf6 en la carpeta especfica y guarada los archivos
+
+tdis = flopy.mf6.ModflowTdis(
+    sim, pname="tdis", time_units="DAYS", nper=1, perioddata=[(1.0, 1, 1.0)]
+)
+
+#Crea el TDISobjeto Flopy
+ims = flopy.mf6.ModflowIms(sim, pname="ims", complexity="SIMPLE")
+
+#Crea el IMSobjeto Flopy Package
+
+model_nam_file = "{}.nam".format(name)
+gwf = flopy.mf6.ModflowGwf(sim, modelname=name, model_nam_file=model_nam_file)
+
+#Crear el objeto de modelo de flujo de agua subterránea Flopy (gwf)
